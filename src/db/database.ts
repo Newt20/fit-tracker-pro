@@ -6,7 +6,7 @@ let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 export function getDb(): Promise<SQLite.SQLiteDatabase> {
   if (!dbPromise) {
     dbPromise = (async () => {
-      const db = await SQLite.openDatabaseAsync('moveledger.db');
+      const db = await SQLite.openDatabaseAsync('fittrack.db');
       await db.execAsync('PRAGMA journal_mode = WAL;');
       await migrate(db);
       return db;

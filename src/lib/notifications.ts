@@ -44,7 +44,7 @@ export async function scheduleDailyReminder(hour: number, minute: number): Promi
   await Notifications.scheduleNotificationAsync({
     identifier: REMINDER_ID,
     content: {
-      title: 'Move Ledger',
+      title: 'Fit Track',
       body: "Time to log today's movement 💪",
       sound: 'default',
     },

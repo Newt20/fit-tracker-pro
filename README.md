@@ -1,8 +1,8 @@
-# Move Ledger — mobile workout tracker
+# Fit Track — mobile workout tracker
 
 A native **iOS + Android** app (Expo / React Native) that tracks **walking, rope-jumping, and weighted / bodyweight strength** work. It stores everything in an on-device SQLite database, sends a **daily local notification** reminder, shows a **calendar**, builds a **weekly summary**, and **frees up space by deleting the day-by-day rows once a week has been summarized** (the totals stay).
 
-Built for **Expo SDK 56** (React Native 0.85, React 19.2).
+Built for **Expo SDK 54** (React Native 0.81.5, React 19.1).
 
 ---
 
@@ -20,7 +20,7 @@ From inside the project folder:
 
 ```bash
 npm install
-npx expo install --fix     # aligns every native package to SDK 56 exactly
+npx expo install --fix     # aligns every native package to SDK 54 exactly
 ```
 
 `expo install --fix` is important: it reconciles `react-native`, `react-native-screens`, `datetimepicker`, etc. to the versions that match the installed Expo SDK, so you never hit version-mismatch errors.
@@ -48,6 +48,22 @@ npm install -g eas-cli
 eas build -p android      # or -p ios
 eas submit                # upload to Play Store / App Store
 ```
+
+### 4b. Docker Android build environment (optional)
+
+The root `Dockerfile` bundles Eclipse Temurin **JDK 17**, the Android **cmdline-tools**, `platform-tools`, `platforms;android-34`, `build-tools;34.0.0`, and **Node 20** — everything needed to compile the Android app without installing Android Studio locally.
+
+```bash
+docker build -t fit-track-android .
+docker run --rm -it -v ${PWD}:/app fit-track-android bash
+
+# inside the container:
+npm install
+npx expo prebuild -p android   # generates the native android/ project (gitignored)
+cd android && ./gradlew assembleRelease
+```
+
+This is a local alternative to `eas build -p android` for producing an APK without Android Studio or EAS cloud credits. It doesn't include an emulator or device, so it's for **building** only, not for running/testing the app.
 
 ---
 
@@ -86,6 +102,8 @@ move-ledger/
 │
 ├── assets/                       # icon / splash (placeholders — swap your own)
 ├── app.json                      # Expo config + plugins (router, sqlite, notifications)
+├── eas.json                      # EAS Build profiles (preview APK)
+├── Dockerfile                    # containerized Android build environment
 ├── package.json
 ├── tsconfig.json
 ├── babel.config.js
@@ -94,7 +112,7 @@ move-ledger/
 
 ## 6. How the pieces work
 
-**Storage.** Everything lives in a local SQLite file (`moveledger.db`) created on first launch by `src/db/database.ts`. Three tables: `entries` (one row per logged activity), `summaries` (one row per summarized week), and `settings` (key/value).
+**Storage.** Everything lives in a local SQLite file (`fittrack.db`) created on first launch by `src/db/database.ts`. Three tables: `entries` (one row per logged activity), `summaries` (one row per summarized week), and `settings` (key/value).
 
 **Daily notification.** In Settings, toggle *Remind me to log* and pick a time. `src/lib/notifications.ts` requests permission and schedules a repeating `DAILY` local notification via `expo-notifications`. Turning it off cancels it. This is a genuine phone notification — no SMS, no server, no cost.
 

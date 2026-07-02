@@ -7,3 +7,19 @@ web-build/
 ios/
 android/
 expo-env.d.ts
+*.tsbuildinfo
+.kotlin/
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# signing credentials
+*.jks
+*.keystore
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem

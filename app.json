@@ -4,7 +4,7 @@
     "slug": "fit-track-pro",
     "version": "1.0.0",
     "orientation": "portrait",
-    "scheme": "moveledger",
+    "scheme": "fittrack",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "icon": "./assets/icon.png",
@@ -15,13 +15,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.example.moveledger",
+      "bundleIdentifier": "com.example.fittrack",
       "infoPlist": {
         "UIBackgroundModes": []
       }
     },
     "android": {
-      "package": "com.example.moveledger",
+      "package": "com.example.fittrack",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#EFF2F1"
