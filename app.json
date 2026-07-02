@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Fit Track",
+    "slug": "fit-track-pro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "moveledger",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#EFF2F1"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.moveledger",
+      "infoPlist": {
+        "UIBackgroundModes": []
+      }
+    },
+    "android": {
+      "package": "com.example.moveledger",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#EFF2F1"
+      },
+      "permissions": [
+        "POST_NOTIFICATIONS",
+        "SCHEDULE_EXACT_ALARM"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      [
+        "expo-notifications",
+        {
+          "color": "#1F8A70"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0b55504b-1886-46b3-95f7-ae1d67a82439"
+      }
+    },
+    "owner": "arisenewts-team"
+  }
+}
