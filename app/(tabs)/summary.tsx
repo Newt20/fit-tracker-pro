@@ -5,12 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApp } from '../../src/context/AppContext';
 import {
   Summary, getSummaries, summarizeWeek, cleanupSummarized,
-  rangeHasData, isWeekSummarized, summaryHasRawRows,
+  rangeHasData, isWeekSummarized, summaryHasRawRows, getWeeklyChartData, WeekChartPoint,
 } from '../../src/db/repository';
 import { isoWeek, dateKey, fmtShort, parseKey, addDays } from '../../src/lib/dates';
 import { trim } from '../../src/lib/format';
 import { ACTIVITY, colors, fonts, radius, shadow } from '../../src/theme/theme';
 import { Empty } from '../../src/components/Empty';
+import { ConsistencyChart } from '../../src/components/ConsistencyChart';
 
 type WeekOption = { key: string; start: string; end: string; label: string };
 
@@ -21,6 +22,7 @@ export default function SummaryScreen() {
   const [options, setOptions] = useState<WeekOption[]>([]);
   const [cleanable, setCleanable] = useState(false);
   const [live, setLive] = useState<Record<number, boolean>>({});
+  const [chartData, setChartData] = useState<WeekChartPoint[]>([]);
 
   const load = useCallback(async () => {
     const now = new Date();
@@ -36,7 +38,7 @@ export default function SummaryScreen() {
       if (!already && hasData) opts.push({ key: w.key, start, end, label });
     }
 
-    const sums = await getSummaries();
+    const [sums, cd] = await Promise.all([getSummaries(), getWeeklyChartData(8)]);
     const liveMap: Record<number, boolean> = {};
     let anyCleanable = false;
     for (const s of sums) {
@@ -49,6 +51,7 @@ export default function SummaryScreen() {
     setSummaries(sums);
     setLive(liveMap);
     setCleanable(anyCleanable);
+    setChartData(cd);
   }, []);
 
   useFocusEffect(useCallback(() => { load(); }, [load, dataVersion]));
@@ -88,6 +91,8 @@ export default function SummaryScreen() {
       <Text style={styles.sub}>
         Roll a week into one record. Cleaning up clears the day-by-day rows but keeps the totals here.
       </Text>
+
+      <ConsistencyChart data={chartData} />
 
       {options.map((o) => (
         <Pressable key={o.key} onPress={() => onSummarize(o)} style={styles.actionGhost}>

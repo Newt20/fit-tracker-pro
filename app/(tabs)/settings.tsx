@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, Pressable, StyleSheet, Switch, Platform, Share, Alert } from 'react-native';
+import { ScrollView, View, Text, Pressable, StyleSheet, Switch, Platform, Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApp } from '../../src/context/AppContext';
-import { dumpAll, wipeAll } from '../../src/db/repository';
+import { wipeAll, getWeeklyChartData } from '../../src/db/repository';
+import { buildReportHtml } from '../../src/lib/pdfReport';
 import { pad } from '../../src/lib/dates';
 import { colors, fonts, radius, shadow } from '../../src/theme/theme';
 
@@ -19,9 +22,19 @@ export default function SettingsScreen() {
     return d;
   })();
 
-  async function onExport() {
-    const data = await dumpAll();
-    await Share.share({ message: JSON.stringify(data, null, 2) });
+  async function onExportPdf() {
+    try {
+      const weeks = await getWeeklyChartData(10);
+      const html = buildReportHtml({ weeks, units: settings.units, generatedAt: new Date() });
+      const { uri } = await Print.printToFileAsync({ html });
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Fit Track summary' });
+      } else {
+        Alert.alert('PDF saved', uri);
+      }
+    } catch (err) {
+      Alert.alert('Export failed', 'Could not generate the PDF report.');
+    }
   }
 
   function onReset() {
@@ -103,8 +116,8 @@ export default function SettingsScreen() {
       {/* Data */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Your data</Text>
-        <Row label="Export everything" hint="Share a JSON backup of logs and summaries.">
-          <Pressable onPress={onExport} style={styles.smallBtn}>
+        <Row label="Export PDF report" hint="A weekly summary with the consistency chart, ready to share or print.">
+          <Pressable onPress={onExportPdf} style={styles.smallBtn}>
             <Text style={styles.smallBtnTxt}>Export</Text>
           </Pressable>
         </Row>

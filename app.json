@@ -7,9 +7,9 @@
     "scheme": "fittrack",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "icon": "./assets/icon.png",
+    "icon": "./assets/fit-track.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/fit-track.png",
       "resizeMode": "contain",
       "backgroundColor": "#EFF2F1"
     },
@@ -23,7 +23,7 @@
     "android": {
       "package": "com.example.fittrack",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/fit-track.png",
         "backgroundColor": "#EFF2F1"
       },
       "permissions": [

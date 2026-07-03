@@ -44,7 +44,7 @@ export default function TodayScreen() {
       style={{ flex: 1, backgroundColor: colors.paper }}
       contentContainerStyle={{ padding: 18, paddingTop: insets.top + 10, paddingBottom: 120 }}
     >
-      <Text style={styles.brand}>Move<Text style={{ color: colors.walk }}>·</Text>Ledger</Text>
+      <Text style={styles.brand}>Fit<Text style={{ color: colors.walk }}>·</Text>Track</Text>
       <Text style={styles.title}>Today</Text>
       <Text style={styles.sub}>{fmtNice(parseKey(today))}</Text>
 

@@ -104,6 +104,18 @@ export type Totals = {
   activeDays: number;
 };
 
+export type WeekChartPoint = {
+  weekKey: string;
+  label: string;
+  startDate: string;
+  endDate: string;
+  walkDist: number;
+  ropeJumps: number;
+  liftSets: number;
+  activeDays: number;
+  isCurrent: boolean;
+};
+
 export async function getTotals(startDate: string, endDate: string): Promise<Totals> {
   const db = await getDb();
   const row = await db.getFirstAsync<any>(
@@ -229,6 +241,54 @@ export async function dumpAll() {
   const summaries = await db.getAllAsync<Summary>('SELECT * FROM summaries');
   const settings = await db.getAllAsync<{ key: string; value: string }>('SELECT * FROM settings');
   return { entries, summaries, settings };
+}
+
+export async function getWeeklyChartData(weeks: number = 8): Promise<WeekChartPoint[]> {
+  const { isoWeek, dateKey, fmtShort, parseKey, addDays } = require('../lib/dates');
+  const sums = await getSummaries();
+  const result: WeekChartPoint[] = [];
+
+  const now = new Date();
+  const thisW = isoWeek(now);
+  const thisKey = thisW.key;
+  const hasThisWeekSummary = sums.some((s) => s.week_key === thisKey);
+
+  if (!hasThisWeekSummary) {
+    const start = dateKey(thisW.monday);
+    const end = dateKey(thisW.sunday);
+    const hasData = await rangeHasData(start, end);
+    if (hasData) {
+      const t = await getTotals(start, end);
+      result.push({
+        weekKey: thisKey,
+        label: fmtShort(thisW.monday),
+        startDate: start,
+        endDate: end,
+        walkDist: t.walkDist,
+        ropeJumps: t.ropeJumps,
+        liftSets: t.liftSets,
+        activeDays: t.activeDays,
+        isCurrent: true,
+      });
+    }
+  }
+
+  for (const s of sums) {
+    if (result.length >= weeks) break;
+    result.push({
+      weekKey: s.week_key,
+      label: fmtShort(parseKey(s.start_date)),
+      startDate: s.start_date,
+      endDate: s.end_date,
+      walkDist: s.walk_dist,
+      ropeJumps: s.rope_jumps,
+      liftSets: s.lift_sets,
+      activeDays: s.active_days,
+      isCurrent: false,
+    });
+  }
+
+  return result.reverse();
 }
 
 export { parseKey };
