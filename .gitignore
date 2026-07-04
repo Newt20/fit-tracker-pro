@@ -9,6 +9,7 @@ android/
 expo-env.d.ts
 *.tsbuildinfo
 .kotlin/
+*.apk
 
 # env / secrets
 .env

@@ -137,4 +137,11 @@ move-ledger/
 - *"Notifications not granted"* → allow notifications for the app in phone settings; remember they don't fire on simulators.
 - *Version mismatch warnings* → run `npx expo install --fix` again.
 - *Metro cache weirdness* → `npx expo start --clear`.
+- *Release APK installs but instantly crashes on open (works in Expo Go)* → almost always an Expo native module whose version doesn't match the SDK. npm's peer auto-install can silently pull a **newer-SDK** module (e.g. `expo-font@57` into an SDK 54 project via `@expo/vector-icons`), which throws `NoSuchMethodError` at startup. Check with:
+  ```bash
+  node -p "require('./node_modules/expo-font/package.json').version"
+  ```
+  and compare against `node_modules/expo/bundledNativeModules.json`. Fix by installing the bundled version explicitly (use `--legacy-peer-deps` if npm raises ERESOLVE), then re-run `npx expo prebuild -p android --clean` and rebuild.
+- *APK won't update over an existing install* → each `expo prebuild --clean` regenerates the signing keystore, so Android sees a different signature. Fully uninstall the app first, then install the new APK.
+- *Getting a crash log without installing anything* → the Docker image already contains `adb`. With the phone's **Wireless debugging** enabled (Android 11+): pair with `adb pair IP:PAIR_PORT CODE`, connect with `adb connect IP:PORT`, then `adb logcat -d -b crash`.
 ```

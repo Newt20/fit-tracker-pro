@@ -1,5 +1,5 @@
 import { getDb } from './database';
-import { datesBetween, parseKey, pad } from '../lib/dates';
+import { datesBetween, parseKey, pad, isoWeek, dateKey, fmtShort, addDays } from '../lib/dates';
 import type { ActivityType } from '../theme/theme';
 
 export type Entry = {
@@ -244,7 +244,6 @@ export async function dumpAll() {
 }
 
 export async function getWeeklyChartData(weeks: number = 8): Promise<WeekChartPoint[]> {
-  const { isoWeek, dateKey, fmtShort, parseKey, addDays } = require('../lib/dates');
   const sums = await getSummaries();
   const result: WeekChartPoint[] = [];
 
