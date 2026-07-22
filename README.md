@@ -1,6 +1,6 @@
 # Fit Track — mobile workout tracker
 
-A native **iOS + Android** app (Expo / React Native) that tracks **walking, rope-jumping, and weighted / bodyweight strength** work. It stores everything in an on-device SQLite database, sends a **daily local notification** reminder, shows a **calendar**, builds a **weekly summary** with a **stacked-bar consistency chart**, exports data as a **PDF report**, and **frees up space by deleting the day-by-day rows once a week has been summarized** (the totals stay).
+A native **Android** app (Expo / React Native) that tracks **walking, rope-jumping, and weighted / bodyweight strength** work. It stores everything in an on-device SQLite database, sends a **daily local notification** reminder, shows a **calendar**, builds a **weekly summary** with a **stacked-bar consistency chart**, exports data as a **PDF report**, and **frees up space by deleting the day-by-day rows once a week has been summarized** (the totals stay).
 
 Built for **Expo SDK 54** (React Native 0.81.5, React 19.1).
 
